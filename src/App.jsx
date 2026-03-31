@@ -32,15 +32,32 @@ function App() {
         return false
       }
 
-      // Scenario filter
-      if (selectedScenarios.length > 0 && !selectedScenarios.some(s => model.tags.includes(s))) {
-        return false
+      // Scenario/Region filter
+      if (selectedScenarios.length > 0) {
+        const hasRegionFilter = selectedScenarios.includes('cn') || selectedScenarios.includes('global')
+        const hasTagFilter = selectedScenarios.some(s => s !== 'cn' && s !== 'global')
+        
+        if (hasRegionFilter && !hasTagFilter) {
+          // Only region filter selected
+          if (selectedScenarios.includes('cn') && model.region !== 'cn') return false
+          if (selectedScenarios.includes('global') && model.region !== 'global') return false
+        } else if (hasTagFilter && !hasRegionFilter) {
+          // Only tag filter selected
+          if (!selectedScenarios.some(s => model.tags.includes(s))) return false
+        } else if (hasTagFilter && hasRegionFilter) {
+          // Both filters selected - AND logic
+          const regionMatch = (selectedScenarios.includes('cn') && model.region === 'cn') ||
+                            (selectedScenarios.includes('global') && model.region === 'global')
+          const tagMatch = selectedScenarios.filter(s => s !== 'cn' && s !== 'global').some(s => model.tags.includes(s))
+          if (!regionMatch || !tagMatch) return false
+        }
       }
 
       // Pricing filter
       if (selectedPricing !== 'all') {
-        if (selectedPricing === '3' && model.pricingLevel < 3) return false
-        if (selectedPricing === '2' && model.pricingLevel !== 2) return false
+        if (selectedPricing === '4' && model.pricingLevel < 4) return false
+        if (selectedPricing === '3' && (model.pricingLevel < 3 || model.pricingLevel > 3)) return false
+        if (selectedPricing === '2' && (model.pricingLevel < 2 || model.pricingLevel > 2)) return false
         if (selectedPricing === '1' && model.pricingLevel > 1) return false
       }
 
@@ -70,7 +87,7 @@ function App() {
                 <span className="text-3xl">🤖</span>
                 AI 模型对比
               </h1>
-              <p className="text-text-secondary mt-1">七大平台价格聚合 · 2026最新数据</p>
+              <p className="text-text-secondary mt-1">全球头部平台价格聚合 · 每日更新</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-sm text-text-secondary">
