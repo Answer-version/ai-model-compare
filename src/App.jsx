@@ -33,18 +33,15 @@ function App() {
 
   const filteredModels = useMemo(() => {
     return models.filter(model => {
-      // Search
       if (searchQuery && !model.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
           !model.provider.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false
       }
 
-      // Provider filter
       if (selectedProviders.length > 0 && !selectedProviders.includes(model.providerKey)) {
         return false
       }
 
-      // Region filter
       if (!selectedScenarios.includes('all')) {
         const hasRegionFilter = selectedScenarios.includes('cn') || selectedScenarios.includes('global')
         const hasTagFilter = selectedScenarios.some(s => s !== 'cn' && s !== 'global')
@@ -62,7 +59,6 @@ function App() {
         }
       }
 
-      // Capability filter
       if (selectedCapabilities.length > 0 && !selectedCapabilities.some(c => model.capabilities.includes(c))) {
         return false
       }
@@ -71,11 +67,20 @@ function App() {
     })
   }, [searchQuery, selectedProviders, selectedScenarios, selectedCapabilities])
 
-  // Sort models
   const sortedModels = useMemo(() => {
     return [...filteredModels].sort((a, b) => {
       if (sortBy === 'rating') return b.rating - a.rating
       if (sortBy === 'inputPrice') return a.inputPrice - b.inputPrice
+      if (sortBy === 'monthlyPrice') {
+        const aPrice = a.plans?.[0]?.monthly ?? Infinity
+        const bPrice = b.plans?.[0]?.monthly ?? Infinity
+        return aPrice - bPrice
+      }
+      if (sortBy === 'firstMonthPrice') {
+        const aPrice = a.plans?.[0]?.firstMonth ?? Infinity
+        const bPrice = b.plans?.[0]?.firstMonth ?? Infinity
+        return aPrice - bPrice
+      }
       if (sortBy === 'context') {
         const aLen = parseInt(a.contextLength) || 0
         const bLen = parseInt(b.contextLength) || 0
@@ -85,7 +90,6 @@ function App() {
     })
   }, [filteredModels, sortBy])
 
-  // Stats
   const stats = useMemo(() => {
     const hotPlans = models.reduce((sum, m) => sum + (m.plans?.filter(p => p.hot).length || 0), 0)
     return {
@@ -96,26 +100,21 @@ function App() {
     }
   }, [])
 
-  const formatPrice = (price, currency = '$') => {
-    if (price === 0) return '免费'
-    return currency === '$' ? `$${price}` : `¥${price}`
-  }
-
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-[1600px] mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
                 <span>🤖</span>
                 AI 模型对比
               </h1>
-              <p className="text-gray-400 text-sm mt-1">全球头部平台价格聚合 · 每日更新</p>
+              <p className="text-gray-500 text-sm mt-1">全球头部平台价格聚合 · 每日更新</p>
             </div>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="text-gray-400">更新日期：2026-03-31</span>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <span>更新日期：2026-03-31</span>
             </div>
           </div>
         </div>
@@ -124,21 +123,21 @@ function App() {
       <main className="max-w-[1600px] mx-auto px-4 py-6">
         {/* Stats Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-3">
-            <div className="text-gray-400 text-xs mb-1">收录模型</div>
-            <div className="text-2xl font-bold text-white">{stats.totalModels}</div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">收录模型</div>
+            <div className="text-2xl font-bold text-gray-900">{stats.totalModels}</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-3">
-            <div className="text-gray-400 text-xs mb-1">平台数量</div>
-            <div className="text-2xl font-bold text-white">{stats.totalProviders}</div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">平台数量</div>
+            <div className="text-2xl font-bold text-gray-900">{stats.totalProviders}</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-3">
-            <div className="text-gray-400 text-xs mb-1">当前筛选</div>
-            <div className="text-2xl font-bold text-blue-400">{stats.filteredCount}</div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">当前筛选</div>
+            <div className="text-2xl font-bold text-blue-600">{stats.filteredCount}</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-3">
-            <div className="text-gray-400 text-xs mb-1">热门套餐</div>
-            <div className="text-2xl font-bold text-orange-400">{stats.hotPlans}</div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">热门套餐</div>
+            <div className="text-2xl font-bold text-orange-600">{stats.hotPlans}</div>
           </div>
         </div>
 
@@ -150,40 +149,40 @@ function App() {
               placeholder="搜索模型名称或厂商..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 pl-10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
             />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">🔍</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 ✕
               </button>
             )}
           </div>
-          <div className="flex gap-2">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500"
-            >
-              <option value="rating">评分排序</option>
-              <option value="inputPrice">价格排序</option>
-              <option value="context">上下文排序</option>
-            </select>
-          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          >
+            <option value="rating">评分排序</option>
+            <option value="inputPrice">API输入价排序</option>
+            <option value="monthlyPrice">月价排序</option>
+            <option value="firstMonthPrice">首月价排序</option>
+            <option value="context">上下文排序</option>
+          </select>
         </div>
 
         {/* Provider Filters */}
-        <div className="mb-4">
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 shadow-sm">
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedProviders([])}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedProviders.length === 0
-                  ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400'
-                  : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-600'
+                  ? 'bg-blue-100 border border-blue-300 text-blue-700'
+                  : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'
               }`}
             >
               全部平台
@@ -194,22 +193,22 @@ function App() {
                 onClick={() => toggleProvider(provider.key)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   selectedProviders.includes(provider.key)
-                    ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400'
-                    : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-600'
+                    ? 'bg-blue-100 border border-blue-300 text-blue-700'
+                    : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'
                 }`}
               >
                 {provider.logo} {provider.name}
               </button>
             ))}
-            <span className="text-gray-600 self-center">|</span>
+            <span className="text-gray-300 self-center">|</span>
             {providers.filter(p => p.region === 'global').map(provider => (
               <button
                 key={provider.key}
                 onClick={() => toggleProvider(provider.key)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   selectedProviders.includes(provider.key)
-                    ? 'bg-blue-500/20 border border-blue-500/40 text-blue-400'
-                    : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-600'
+                    ? 'bg-blue-100 border border-blue-300 text-blue-700'
+                    : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'
                 }`}
               >
                 {provider.logo} {provider.name}
@@ -219,66 +218,71 @@ function App() {
         </div>
 
         {/* Scenario & Capability Filters */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <div className="flex flex-wrap gap-2">
-            {scenarios.map(scenario => (
-              <button
-                key={scenario.key}
-                onClick={() => toggleScenario(scenario.key)}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
-                  selectedScenarios.includes(scenario.key)
-                    ? 'bg-purple-500/20 border border-purple-500/40 text-purple-400'
-                    : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-600'
-                }`}
-              >
-                {scenario.name}
-              </button>
-            ))}
-          </div>
-          <div className="border-l border-gray-700 pl-4 flex flex-wrap gap-2">
-            <span className="text-gray-500 text-sm self-center">能力:</span>
-            {capabilities.map(cap => (
-              <button
-                key={cap.key}
-                onClick={() => toggleCapability(cap.key)}
-                className={`px-2 py-1 rounded text-xs transition-all ${
-                  selectedCapabilities.includes(cap.key)
-                    ? 'bg-green-500/20 border border-green-500/40 text-green-400'
-                    : 'bg-gray-800 border border-gray-700 text-gray-400 hover:border-gray-600'
-                }`}
-              >
-                {cap.icon} {cap.name}
-              </button>
-            ))}
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-2">
+              {scenarios.map(scenario => (
+                <button
+                  key={scenario.key}
+                  onClick={() => toggleScenario(scenario.key)}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
+                    selectedScenarios.includes(scenario.key)
+                      ? 'bg-purple-100 border border-purple-300 text-purple-700'
+                      : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {scenario.name}
+                </button>
+              ))}
+            </div>
+            <div className="border-l border-gray-200 pl-4 flex flex-wrap gap-2">
+              <span className="text-gray-400 text-sm self-center">能力:</span>
+              {capabilities.map(cap => (
+                <button
+                  key={cap.key}
+                  onClick={() => toggleCapability(cap.key)}
+                  className={`px-2 py-1 rounded text-xs transition-all ${
+                    selectedCapabilities.includes(cap.key)
+                      ? 'bg-green-100 border border-green-300 text-green-700'
+                      : 'bg-gray-100 border border-gray-200 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {cap.icon} {cap.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Table */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1200px]">
+            <table className="w-full min-w-[1400px]">
               <thead>
-                <tr className="border-b border-gray-800 text-left text-sm text-gray-400">
-                  <th className="px-4 py-3 font-medium">平台</th>
-                  <th className="px-4 py-3 font-medium">模型</th>
-                  <th className="px-4 py-3 font-medium">评分</th>
-                  <th className="px-4 py-3 font-medium">上下文</th>
-                  <th className="px-4 py-3 font-medium">输入价</th>
-                  <th className="px-4 py-3 font-medium">输出价</th>
-                  <th className="px-4 py-3 font-medium">能力</th>
-                  <th className="px-4 py-3 font-medium">操作</th>
+                <tr className="bg-gray-50 border-b border-gray-200 text-left text-sm text-gray-600">
+                  <th className="px-4 py-3 font-semibold">平台</th>
+                  <th className="px-4 py-3 font-semibold">模型</th>
+                  <th className="px-4 py-3 font-semibold">评分</th>
+                  <th className="px-4 py-3 font-semibold">上下文</th>
+                  <th className="px-4 py-3 font-semibold">首月价</th>
+                  <th className="px-4 py-3 font-semibold">月价</th>
+                  <th className="px-4 py-3 font-semibold">季价</th>
+                  <th className="px-4 py-3 font-semibold">年价</th>
+                  <th className="px-4 py-3 font-semibold">5h请求</th>
+                  <th className="px-4 py-3 font-semibold">能力</th>
+                  <th className="px-4 py-3 font-semibold">操作</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedModels.map((model, index) => (
-                  <ModelRow key={model.id} model={model} index={index} formatPrice={formatPrice} />
+                  <ModelRow key={model.id} model={model} index={index} />
                 ))}
               </tbody>
             </table>
           </div>
 
           {sortedModels.length === 0 && (
-            <div className="text-center py-16 text-gray-500">
+            <div className="text-center py-16 text-gray-400">
               <div className="text-4xl mb-4">🔍</div>
               <div>没有找到匹配的模型</div>
             </div>
@@ -291,7 +295,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 mt-12">
+      <footer className="border-t border-gray-200 mt-12 bg-white">
         <div className="max-w-[1600px] mx-auto px-4 py-6">
           <div className="text-center text-gray-500 text-sm">
             <p>数据仅供参考，实际价格以各平台官方为准</p>
@@ -303,25 +307,35 @@ function App() {
   )
 }
 
-function ModelRow({ model, index, formatPrice }) {
+function ModelRow({ model, index }) {
   const colors = colorMap[model.color] || colorMap.blue
   const [expanded, setExpanded] = useState(false)
+  const hotPlan = model.plans?.find(p => p.hot)
+
+  const formatPrice = (price, prefix = '¥') => {
+    if (price === null || price === undefined) return '-'
+    if (price === 0) return '免费'
+    return `${prefix}${price}`
+  }
 
   return (
     <>
-      <tr className={`border-b border-gray-800 hover:bg-gray-800/50 transition-colors ${index % 2 === 0 ? 'bg-gray-900' : 'bg-gray-900/50'}`}>
+      <tr 
+        className={`border-b border-gray-100 hover:bg-blue-50/30 transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+        onClick={() => model.plans?.length > 0 && setExpanded(!expanded)}
+      >
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">{model.logo}</span>
-            <span className="text-white font-medium text-sm">{model.provider}</span>
-            <span className={`text-xs px-1.5 py-0.5 rounded ${model.region === 'cn' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'}`}>
-              {model.region === 'cn' ? '🇨🇳' : '🌎'}
+            <span className="font-medium text-gray-900 text-sm">{model.provider}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded ${model.region === 'cn' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+              {model.region === 'cn' ? '国内' : '全球'}
             </span>
           </div>
         </td>
         <td className="px-4 py-3">
-          <div className="font-medium text-white">{model.name}</div>
-          <div className="text-xs text-gray-500 mt-0.5">
+          <div className="font-semibold text-gray-900">{model.name}</div>
+          <div className="text-xs text-gray-500 mt-0.5 flex gap-1">
             {model.highlights.slice(0, 2).map((h, i) => (
               <span key={i} className={`${colors.text}`}>✨ {h}</span>
             ))}
@@ -329,34 +343,47 @@ function ModelRow({ model, index, formatPrice }) {
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-1">
-            <span className="text-yellow-400">★</span>
-            <span className="text-white font-medium">{model.rating}</span>
+            <span className="text-yellow-500">★</span>
+            <span className="font-semibold text-gray-900">{model.rating}</span>
           </div>
         </td>
         <td className="px-4 py-3">
-          <span className="text-white font-mono text-sm">{model.contextLength}</span>
+          <span className="font-mono text-gray-700 text-sm">{model.contextLength}</span>
         </td>
         <td className="px-4 py-3">
-          <span className={`font-mono text-sm ${model.region === 'cn' ? 'text-green-400' : 'text-orange-400'}`}>
-            {formatPrice(model.inputPrice, model.region === 'cn' ? '¥' : '$')}
+          <span className={`font-bold ${hotPlan ? 'text-orange-600' : 'text-gray-600'}`}>
+            {hotPlan ? '¥' + hotPlan.firstMonth : '-'}
           </span>
-          <span className="text-gray-500 text-xs">/千tokens</span>
         </td>
         <td className="px-4 py-3">
-          <span className={`font-mono text-sm ${model.region === 'cn' ? 'text-green-400' : 'text-orange-400'}`}>
-            {formatPrice(model.outputPrice, model.region === 'cn' ? '¥' : '$')}
+          <span className={`font-semibold ${hotPlan ? 'text-gray-900' : 'text-gray-400'}`}>
+            {hotPlan ? '¥' + hotPlan.monthly + '/月' : '-'}
           </span>
-          <span className="text-gray-500 text-xs">/千tokens</span>
+        </td>
+        <td className="px-4 py-3">
+          <span className="text-gray-600">
+            {hotPlan ? '¥' + hotPlan.quarterly : '-'}
+          </span>
+        </td>
+        <td className="px-4 py-3">
+          <span className="text-gray-600">
+            {hotPlan ? '¥' + hotPlan.yearly : '-'}
+          </span>
+        </td>
+        <td className="px-4 py-3">
+          <span className="text-gray-600 text-sm">
+            {hotPlan ? (hotPlan.requestsPer5h ? hotPlan.requestsPer5h.toLocaleString() : '未公开') : '-'}
+          </span>
         </td>
         <td className="px-4 py-3">
           <div className="flex flex-wrap gap-1">
             {model.capabilities.slice(0, 3).map((cap, i) => (
-              <span key={i} className="px-1.5 py-0.5 bg-gray-800 text-gray-300 rounded text-xs">
+              <span key={i} className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
                 {cap}
               </span>
             ))}
             {model.capabilities.length > 3 && (
-              <span className="px-1.5 py-0.5 bg-gray-700 text-gray-400 rounded text-xs">
+              <span className="px-1.5 py-0.5 bg-gray-200 text-gray-500 rounded text-xs">
                 +{model.capabilities.length - 3}
               </span>
             )}
@@ -365,56 +392,58 @@ function ModelRow({ model, index, formatPrice }) {
         <td className="px-4 py-3">
           <div className="flex gap-2">
             <a
-              href={model.purchaseUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-300 hover:border-gray-600 hover:text-white transition-all"
-            >
-              👁️ 套餐
-            </a>
-            <a
               href={model.pricingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${colors.button}`}
+              onClick={(e) => e.stopPropagation()}
+              className="px-3 py-1.5 bg-gray-100 border border-gray-200 rounded-lg text-xs text-gray-600 hover:bg-gray-200 transition-all"
             >
-              🛒 购买
+              套餐详情
+            </a>
+            <a
+              href={model.purchaseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="px-3 py-1.5 bg-blue-500 rounded-lg text-xs text-white font-medium hover:bg-blue-600 transition-all shadow-sm"
+            >
+              购买
             </a>
           </div>
         </td>
       </tr>
-      {/* Expanded Plans Row */}
-      {model.plans && model.plans.length > 0 && (
-        <tr className="border-b border-gray-800">
-          <td colSpan={8} className="px-4 py-3 bg-gray-950/50">
+      {/* Expanded Plans */}
+      {model.plans && model.plans.length > 0 && expanded && (
+        <tr className="border-b border-gray-100">
+          <td colSpan={11} className="px-4 py-4 bg-gradient-to-b from-blue-50/50 to-white">
             <div className="flex flex-wrap gap-3">
               {model.plans.map((plan, i) => (
-                <div key={i} className={`flex-1 min-w-[180px] max-w-[240px] p-3 rounded-lg border ${plan.hot ? 'border-orange-500/40 bg-orange-500/5' : 'border-gray-700 bg-gray-900/50'}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium text-white text-sm">{plan.name}</span>
-                    {plan.hot && <span className="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 rounded text-xs">热门</span>}
-                    {plan.speed && <span className="px-1.5 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">{plan.speed}</span>}
+                <div key={i} className={`flex-1 min-w-[160px] max-w-[200px] p-4 rounded-xl border-2 ${plan.hot ? 'border-orange-300 bg-white shadow-md' : 'border-gray-200 bg-white'}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="font-semibold text-gray-900">{plan.name}</span>
+                    {plan.hot && <span className="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-xs font-medium">热门</span>}
+                    {plan.speed && <span className="px-2 py-0.5 bg-blue-100 text-blue-600 rounded text-xs">{plan.speed}</span>}
                   </div>
-                  <div className="text-xs text-gray-400 space-y-1">
+                  <div className="space-y-1.5 text-sm">
                     <div className="flex justify-between">
-                      <span>首月</span>
-                      <span className="text-white font-mono">¥{plan.firstMonth}</span>
+                      <span className="text-gray-500">首月</span>
+                      <span className="font-bold text-orange-600">¥{plan.firstMonth}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>月费</span>
-                      <span className="text-white font-mono">¥{plan.monthly}/月</span>
+                      <span className="text-gray-500">月价</span>
+                      <span className="font-semibold text-gray-900">¥{plan.monthly}/月</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>季费</span>
-                      <span className="text-white font-mono">¥{plan.quarterly}/季</span>
+                      <span className="text-gray-500">季价</span>
+                      <span className="text-gray-700">¥{plan.quarterly}/季</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>年费</span>
-                      <span className="text-white font-mono">¥{plan.yearly}/年</span>
+                      <span className="text-gray-500">年价</span>
+                      <span className="text-gray-700">¥{plan.yearly}/年</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>请求限制</span>
-                      <span className="text-white font-mono">{plan.requestsPer5h ? `${plan.requestsPer5h}/5h` : '未公开'}</span>
+                    <div className="flex justify-between pt-1 border-t border-gray-100">
+                      <span className="text-gray-500">5h请求</span>
+                      <span className="text-gray-700 font-medium">{plan.requestsPer5h ? plan.requestsPer5h.toLocaleString() : '未公开'}</span>
                     </div>
                   </div>
                 </div>

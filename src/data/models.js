@@ -7,12 +7,10 @@ export const models = [
     providerKey: 'minimax',
     logo: '🤖',
     contextLength: '128K',
-    // Token定价
     inputPrice: 0.001,
     outputPrice: 0.001,
     pricingLevel: 1,
     rating: 4.5,
-    // 能力标签
     capabilities: ['文本', '快速响应'],
     strengths: ['推理速度快', '成本极低', 'API 稳定'],
     weaknesses: ['中文创意写作一般', '多模态能力弱'],
@@ -24,7 +22,6 @@ export const models = [
     purchaseUrl: 'https://platform.minimaxi.com/',
     pricingUrl: 'https://platform.minimaxi.com/document/price',
     region: 'cn',
-    // 订阅套餐 (新增)
     plans: [
       { name: 'Starter', firstMonth: 29, monthly: 29, quarterly: 87, yearly: 290, requestsPer5h: 600, hot: true },
       { name: 'Plus', firstMonth: 49, monthly: 49, quarterly: 147, yearly: 490, requestsPer5h: 1500, hot: false },
@@ -801,7 +798,6 @@ export const models = [
 ]
 
 export const providers = [
-  // 国内厂商
   { key: 'minimax', name: '稀宇科技', logo: '🤖', color: 'blue', region: 'cn' },
   { key: 'doubao', name: '字节跳动', logo: '🫐', color: 'purple', region: 'cn' },
   { key: 'kimi', name: '月之暗面', logo: '🌙', color: 'yellow', region: 'cn' },
@@ -810,7 +806,6 @@ export const providers = [
   { key: 'deepseek', name: '深度求索', logo: '🔍', color: 'red', region: 'cn' },
   { key: 'yi', name: '零一万物', logo: '✨', color: 'purple', region: 'cn' },
   { key: 'baichuan', name: '百川AI', logo: '🏔️', color: 'green', region: 'cn' },
-  // 全球厂商
   { key: 'openai', name: 'OpenAI', logo: '🧠', color: 'orange', region: 'global' },
   { key: 'anthropic', name: 'Anthropic', logo: '🧩', color: 'red', region: 'global' },
   { key: 'google', name: 'Google', logo: '💎', color: 'blue', region: 'global' },
@@ -825,85 +820,40 @@ export const providers = [
 export const capabilities = [
   { key: '文本', name: '文本', icon: '📝' },
   { key: '多模态', name: '多模态', icon: '🎨' },
-  { key: '视频', name: '视频理解', icon: '🎬' },
+  { key: '视频', name: '视频', icon: '🎬' },
   { key: '代码', name: '代码', icon: '💻' },
-  { key: '推理', name: '推理/数学', icon: '🧮' },
+  { key: '推理', name: '推理', icon: '🧮' },
   { key: '长文本', name: '长文本', icon: '📄' },
   { key: '中文', name: '中文', icon: '🇨🇳' },
   { key: '多语言', name: '多语言', icon: '🌍' },
-  { key: 'RAG', name: 'RAG优化', icon: '📚' },
+  { key: 'RAG', name: 'RAG', icon: '📚' },
   { key: '开源', name: '开源', icon: '🔓' },
-  { key: '企业', name: '企业级', icon: '🏢' },
-  { key: 'Agent', name: 'Agent', icon: '🤖' },
-  { key: '快速响应', name: '快速响应', icon: '⚡' },
-  { key: '实时', name: '实时信息', icon: '📡' },
-  { key: '角色扮演', name: '角色扮演', icon: '🎭' },
+  { key: '企业', name: '企业', icon: '🏢' },
+  { key: '快速响应', name: '快速', icon: '⚡' },
+  { key: '实时', name: '实时', icon: '📡' },
+  { key: '角色扮演', name: '角色', icon: '🎭' },
 ]
 
 export const scenarios = [
   { key: 'all', name: '全部' },
-  { key: 'cn', name: '🌏 国内' },
-  { key: 'global', name: '🌎 全球' },
-  { key: '通用', name: '通用任务' },
-  { key: '代码', name: '代码开发' },
-  { key: '中文', name: '中文处理' },
+  { key: 'cn', name: '国内' },
+  { key: 'global', name: '全球' },
+  { key: '通用', name: '通用' },
+  { key: '代码', name: '代码' },
+  { key: '中文', name: '中文' },
   { key: '长文本', name: '长文本' },
   { key: '多模态', name: '多模态' },
-  { key: '推理', name: '推理/数学' },
-  { key: '低价', name: '低价优先' },
-  { key: '开源', name: '开源免费' },
-  { key: 'RAG', name: 'RAG优化' },
-  { key: '企业', name: '企业应用' },
+  { key: '推理', name: '推理' },
+  { key: '低价', name: '低价' },
+  { key: '开源', name: '开源' },
 ]
 
 export const colorMap = {
-  blue: {
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-500/30',
-    text: 'text-blue-400',
-    badge: 'bg-blue-500/20 text-blue-300',
-    button: 'bg-blue-500/20 border-blue-500/40 text-blue-400 hover:bg-blue-500/30',
-  },
-  green: {
-    bg: 'bg-green-500/10',
-    border: 'border-green-500/30',
-    text: 'text-green-400',
-    badge: 'bg-green-500/20 text-green-300',
-    button: 'bg-green-500/20 border-green-500/40 text-green-400 hover:bg-green-500/30',
-  },
-  yellow: {
-    bg: 'bg-yellow-500/10',
-    border: 'border-yellow-500/30',
-    text: 'text-yellow-400',
-    badge: 'bg-yellow-500/20 text-yellow-300',
-    button: 'bg-yellow-500/20 border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/30',
-  },
-  red: {
-    bg: 'bg-red-500/10',
-    border: 'border-red-500/30',
-    text: 'text-red-400',
-    badge: 'bg-red-500/20 text-red-300',
-    button: 'bg-red-500/20 border-red-500/40 text-red-400 hover:bg-red-500/30',
-  },
-  purple: {
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/30',
-    text: 'text-purple-400',
-    badge: 'bg-purple-500/20 text-purple-300',
-    button: 'bg-purple-500/20 border-purple-500/40 text-purple-400 hover:bg-purple-500/30',
-  },
-  orange: {
-    bg: 'bg-orange-500/10',
-    border: 'border-orange-500/30',
-    text: 'text-orange-400',
-    badge: 'bg-orange-500/20 text-orange-300',
-    button: 'bg-orange-500/20 border-orange-500/40 text-orange-400 hover:bg-orange-500/30',
-  },
-  cyan: {
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-500/30',
-    text: 'text-cyan-400',
-    badge: 'bg-cyan-500/20 text-cyan-300',
-    button: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/30',
-  },
+  blue: { primary: '#3b82f6', bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-700' },
+  green: { primary: '#22c55e', bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-600', badge: 'bg-green-100 text-green-700' },
+  yellow: { primary: '#eab308', bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-600', badge: 'bg-yellow-100 text-yellow-700' },
+  red: { primary: '#ef4444', bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-600', badge: 'bg-red-100 text-red-700' },
+  purple: { primary: '#a855f7', bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-600', badge: 'bg-purple-100 text-purple-700' },
+  orange: { primary: '#f97316', bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-600', badge: 'bg-orange-100 text-orange-700' },
+  cyan: { primary: '#06b6d4', bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-600', badge: 'bg-cyan-100 text-cyan-700' },
 }
