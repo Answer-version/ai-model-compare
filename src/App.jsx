@@ -14,9 +14,14 @@ function App() {
   }
 
   const toggleScenario = (key) => {
-    setSelectedScenarios(prev =>
-      prev.includes(key) ? prev.filter(s => s !== key) : [...prev, key]
-    )
+    if (key === 'all') {
+      setSelectedScenarios(['all'])
+      return
+    }
+    setSelectedScenarios(prev => {
+      const filtered = prev.filter(s => s !== 'all')
+      return filtered.includes(key) ? filtered.filter(s => s !== key) : [...filtered, key]
+    })
   }
 
   const filteredModels = useMemo(() => {
@@ -32,8 +37,8 @@ function App() {
         return false
       }
 
-      // Scenario/Region filter
-      if (selectedScenarios.length > 0) {
+      // Scenario/Region filter - "all" means no filter
+      if (!selectedScenarios.includes('all') && selectedScenarios.length > 0) {
         const hasRegionFilter = selectedScenarios.includes('cn') || selectedScenarios.includes('global')
         const hasTagFilter = selectedScenarios.some(s => s !== 'cn' && s !== 'global')
         
@@ -326,21 +331,39 @@ function ModelCard({ model, index }) {
         </div>
       </div>
 
-      {/* Purchase Button */}
-      <a
-        href={model.purchaseUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`block w-full text-center px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
-          model.pricingLevel === 1
-            ? 'bg-accent-green/20 border border-accent-green/40 text-accent-green hover:bg-accent-green/30'
-            : model.pricingLevel === 2
-            ? 'bg-accent-blue/20 border border-accent-blue/40 text-accent-blue hover:bg-accent-blue/30'
-            : 'bg-accent-purple/20 border border-accent-purple/40 text-accent-purple hover:bg-accent-purple/30'
-        }`}
-      >
-        🛒 前往官网购买套餐
-      </a>
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        {/* Preview Pricing Button */}
+        <a
+          href={model.purchaseUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex-1 text-center px-3 py-2 rounded-lg font-medium text-sm transition-all ${
+            model.pricingLevel === 1
+              ? 'bg-bg-tertiary border border-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
+              : model.pricingLevel === 2
+              ? 'bg-bg-tertiary border border-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
+              : 'bg-bg-tertiary border border-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
+          }`}
+        >
+          👁️ 查看官网套餐
+        </a>
+        {/* Purchase Button */}
+        <a
+          href={model.purchaseUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex-1 text-center px-3 py-2 rounded-lg font-medium text-sm transition-all ${
+            model.pricingLevel === 1
+              ? 'bg-accent-green/20 border border-accent-green/40 text-accent-green hover:bg-accent-green/30'
+              : model.pricingLevel === 2
+              ? 'bg-accent-blue/20 border border-accent-blue/40 text-accent-blue hover:bg-accent-blue/30'
+              : 'bg-accent-purple/20 border border-accent-purple/40 text-accent-purple hover:bg-accent-purple/30'
+          }`}
+        >
+          🛒 购买
+        </a>
+      </div>
     </div>
   )
 }
