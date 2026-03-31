@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { models, providers, capabilities, scenarios, colorMap } from './data/models'
+import { models, providers, capabilities, scenarios, billingTypes, colorMap } from './data/models'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -33,11 +33,6 @@ function App() {
 
   const filteredModels = useMemo(() => {
     return models.filter(model => {
-      // Only show models with subscription plans
-      if (!model.plans || model.plans.length === 0) {
-        return false
-      }
-
       if (searchQuery && !model.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
           !model.provider.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false
@@ -47,19 +42,42 @@ function App() {
         return false
       }
 
+      // Handle billing type scenarios (订阅/API/开源)
       if (!selectedScenarios.includes('all')) {
+        const hasBillingFilter = selectedScenarios.includes('订阅') || 
+                                selectedScenarios.includes('API') || 
+                                selectedScenarios.includes('开源')
         const hasRegionFilter = selectedScenarios.includes('cn') || selectedScenarios.includes('global')
-        const hasTagFilter = selectedScenarios.some(s => s !== 'cn' && s !== 'global')
+        const hasTagFilter = selectedScenarios.some(s => 
+          s !== 'cn' && s !== 'global' && s !== '订阅' && s !== 'API' && s !== '开源')
 
-        if (hasRegionFilter && !hasTagFilter) {
+        // Billing type filter
+        if (hasBillingFilter) {
+          const billingMatch = 
+            (selectedScenarios.includes('订阅') && model.billingType === 'subscription') ||
+            (selectedScenarios.includes('API') && model.billingType === 'api') ||
+            (selectedScenarios.includes('开源') && model.billingType === 'free')
+          if (!billingMatch) return false
+        }
+
+        // Region filter
+        if (hasRegionFilter && !hasBillingFilter) {
           if (selectedScenarios.includes('cn') && model.region !== 'cn') return false
           if (selectedScenarios.includes('global') && model.region !== 'global') return false
-        } else if (hasTagFilter && !hasRegionFilter) {
+        }
+
+        // Tag filter
+        if (hasTagFilter && !hasRegionFilter && !hasBillingFilter) {
           if (!selectedScenarios.some(s => model.tags.includes(s))) return false
-        } else if (hasTagFilter && hasRegionFilter) {
+        }
+        
+        // Combined filters (region + tag)
+        if (hasTagFilter && hasRegionFilter) {
           const regionMatch = (selectedScenarios.includes('cn') && model.region === 'cn') ||
                             (selectedScenarios.includes('global') && model.region === 'global')
-          const tagMatch = selectedScenarios.filter(s => s !== 'cn' && s !== 'global').some(s => model.tags.includes(s))
+          const tagMatch = selectedScenarios.filter(s => 
+            s !== 'cn' && s !== 'global' && s !== '订阅' && s !== 'API' && s !== '开源'
+          ).some(s => model.tags.includes(s))
           if (!regionMatch || !tagMatch) return false
         }
       }
@@ -96,14 +114,18 @@ function App() {
   }, [filteredModels, sortBy])
 
   const stats = useMemo(() => {
-    const modelsWithPlans = models.filter(m => m.plans && m.plans.length > 0)
     const hotPlans = models.reduce((sum, m) => sum + (m.plans?.filter(p => p.hot).length || 0), 0)
-    const providersWithPlans = [...new Set(modelsWithPlans.map(m => m.providerKey))]
+    const subModels = models.filter(m => m.billingType === 'subscription').length
+    const apiModels = models.filter(m => m.billingType === 'api').length
+    const freeModels = models.filter(m => m.billingType === 'free').length
     return {
-      totalModels: modelsWithPlans.length,
-      totalProviders: providersWithPlans.length,
+      totalModels: models.length,
+      totalProviders: providers.length,
       filteredCount: filteredModels.length,
-      hotPlans
+      hotPlans,
+      subModels,
+      apiModels,
+      freeModels
     }
   }, [])
 
@@ -129,22 +151,26 @@ function App() {
 
       <main className="max-w-[1600px] mx-auto px-4 py-6">
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
           <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
             <div className="text-gray-500 text-xs mb-1">收录模型</div>
             <div className="text-2xl font-bold text-gray-900">{stats.totalModels}</div>
           </div>
           <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <div className="text-gray-500 text-xs mb-1">平台数量</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.totalProviders}</div>
+            <div className="text-gray-500 text-xs mb-1">订阅制</div>
+            <div className="text-2xl font-bold text-orange-600">{stats.subModels}</div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">API按量</div>
+            <div className="text-2xl font-bold text-blue-600">{stats.apiModels}</div>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="text-gray-500 text-xs mb-1">开源免费</div>
+            <div className="text-2xl font-bold text-green-600">{stats.freeModels}</div>
           </div>
           <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
             <div className="text-gray-500 text-xs mb-1">当前筛选</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.filteredCount}</div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <div className="text-gray-500 text-xs mb-1">热门套餐</div>
-            <div className="text-2xl font-bold text-orange-600">{stats.hotPlans}</div>
+            <div className="text-2xl font-bold text-purple-600">{stats.filteredCount}</div>
           </div>
         </div>
 
@@ -264,14 +290,22 @@ function App() {
         {/* Table */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           {/* Tip Banner */}
-          <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex items-center gap-4 text-sm">
+          <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex items-center gap-4 text-sm flex-wrap">
+            <span className="flex items-center gap-2 text-orange-700">
+              <span className="bg-orange-100 px-2 py-0.5 rounded text-xs font-bold">📋</span>
+              <span>订阅制 = 包月/包年套餐</span>
+            </span>
             <span className="flex items-center gap-2 text-blue-700">
-              <span className="bg-blue-100 px-2 py-0.5 rounded text-xs font-bold">📋</span>
-              <span><strong>有套餐</strong> 标签表示该模型有订阅套餐</span>
+              <span className="bg-blue-100 px-2 py-0.5 rounded text-xs font-bold">💰</span>
+              <span>API按量 = token计费</span>
+            </span>
+            <span className="flex items-center gap-2 text-green-700">
+              <span className="bg-green-100 px-2 py-0.5 rounded text-xs font-bold">🆓</span>
+              <span>开源免费 = 本地部署</span>
             </span>
             <span className="flex items-center gap-2 text-purple-700">
               <span className="bg-purple-100 px-2 py-0.5 rounded text-xs font-bold">👆</span>
-              <span>点击模型行可<strong>展开/收起</strong>全部套餐详情</span>
+              <span>点击模型行<strong>展开/收起</strong>套餐</span>
             </span>
           </div>
           <div className="overflow-x-auto">
@@ -280,6 +314,7 @@ function App() {
                 <tr className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200 text-left text-sm text-gray-600">
                   <th className="px-4 py-3 font-semibold">平台</th>
                   <th className="px-4 py-3 font-semibold">模型</th>
+                  <th className="px-4 py-3 font-semibold">计费方式</th>
                   <th className="px-4 py-3 font-semibold">评分</th>
                   <th className="px-4 py-3 font-semibold">上下文</th>
                   <th className="px-4 py-3 font-semibold">首月价</th>
@@ -328,7 +363,6 @@ function App() {
 function ModelRow({ model, index }) {
   const colors = colorMap[model.color] || colorMap.blue
   const [expanded, setExpanded] = useState(false)
-  // 显示第一个套餐（不是只显示热门）
   const firstPlan = model.plans?.[0]
 
   const formatPrice = (price, prefix = '¥') => {
@@ -337,13 +371,26 @@ function ModelRow({ model, index }) {
     return `${prefix}${price}`
   }
 
-  const hasPlans = model.plans && model.plans.length > 0
+  const hasExpandablePlans = model.plans && model.plans.length > 1
+  
+  const getBillingBadge = () => {
+    switch(model.billingType) {
+      case 'subscription':
+        return <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded text-xs font-medium">📋 订阅</span>
+      case 'api':
+        return <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">💰 API</span>
+      case 'free':
+        return <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">🆓 免费</span>
+      default:
+        return null
+    }
+  }
 
   return (
     <>
       <tr 
-        className={`border-b border-gray-100 hover:bg-blue-50/50 transition-colors ${hasPlans ? 'cursor-pointer' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-        onClick={() => hasPlans && setExpanded(!expanded)}
+        className={`border-b border-gray-100 hover:bg-blue-50/50 transition-colors ${hasExpandablePlans ? 'cursor-pointer' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+        onClick={() => hasExpandablePlans && setExpanded(!expanded)}
       >
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
@@ -352,11 +399,6 @@ function ModelRow({ model, index }) {
             <span className={`text-xs px-1.5 py-0.5 rounded ${model.region === 'cn' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
               {model.region === 'cn' ? '国内' : '全球'}
             </span>
-            {hasPlans && (
-              <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded cursor-help" title="点击查看套餐详情">
-                📋 有套餐
-              </span>
-            )}
           </div>
         </td>
         <td className="px-4 py-3">
@@ -366,6 +408,9 @@ function ModelRow({ model, index }) {
               <span key={i} className={`${colors.text}`}>✨ {h}</span>
             ))}
           </div>
+        </td>
+        <td className="px-4 py-3">
+          {getBillingBadge()}
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-1">
@@ -437,9 +482,9 @@ function ModelRow({ model, index }) {
         </td>
       </tr>
       {/* Expanded Plans Modal */}
-      {hasPlans && expanded && (
+      {hasExpandablePlans && expanded && (
         <tr className="border-b border-gray-100">
-          <td colSpan={11} className="px-4 py-6 bg-gradient-to-b from-blue-50/50 to-white">
+          <td colSpan={12} className="px-4 py-6 bg-gradient-to-b from-blue-50/50 to-white">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{model.logo}</span>
@@ -506,7 +551,7 @@ function ModelRow({ model, index }) {
                 </div>
               ))}
             </div>
-            {hasPlans && (
+            {hasExpandablePlans && (
               <div className="mt-4 text-center text-gray-400 text-sm">
                 💡 点击任意模型行可展开/收起套餐详情
               </div>
@@ -514,10 +559,10 @@ function ModelRow({ model, index }) {
           </td>
         </tr>
       )}
-      {/* Show tip for rows with plans */}
-      {!expanded && hasPlans && (
+      {/* Show tip for rows with expandable plans */}
+      {!expanded && hasExpandablePlans && (
         <tr className="border-b border-gray-100">
-          <td colSpan={11} className="px-4 py-1 bg-blue-50/30">
+          <td colSpan={12} className="px-4 py-1 bg-blue-50/30">
             <div className="flex items-center gap-2 text-blue-500 text-xs">
               <span>👆</span>
               <span>点击上方行查看 {model.name} 的全部套餐详情</span>
