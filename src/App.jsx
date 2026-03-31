@@ -6,7 +6,7 @@ function App() {
   const [selectedProviders, setSelectedProviders] = useState([])
   const [selectedScenarios, setSelectedScenarios] = useState(['all'])
   const [selectedCapabilities, setSelectedCapabilities] = useState([])
-  const [sortBy, setSortBy] = useState('rating')
+  const [sortBy, setSortBy] = useState('provider')
 
   const toggleProvider = (key) => {
     setSelectedProviders(prev =>
@@ -92,6 +92,7 @@ function App() {
 
   const sortedModels = useMemo(() => {
     return [...filteredModels].sort((a, b) => {
+      if (sortBy === 'provider') return a.provider.localeCompare(b.provider)
       if (sortBy === 'rating') return b.rating - a.rating
       if (sortBy === 'inputPrice') return a.inputPrice - b.inputPrice
       if (sortBy === 'monthlyPrice') {
@@ -199,6 +200,7 @@ function App() {
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
+            <option value="provider">按厂商排序</option>
             <option value="rating">评分排序</option>
             <option value="inputPrice">API输入价排序</option>
             <option value="monthlyPrice">月价排序</option>
