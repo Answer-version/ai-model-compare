@@ -298,7 +298,7 @@ function ModelCard({ model, index }) {
       </div>
 
       {/* Not Suitable For */}
-      <div>
+      <div className="mb-4">
         <div className="text-xs text-text-secondary mb-1">⚠️ 不适合</div>
         <div className="flex flex-wrap gap-1">
           {model.notSuitableFor.map((n, i) => (
@@ -308,6 +308,22 @@ function ModelCard({ model, index }) {
           ))}
         </div>
       </div>
+
+      {/* Purchase Button */}
+      <a
+        href={model.purchaseUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`block w-full text-center px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+          model.pricingLevel === 1
+            ? 'bg-accent-green/20 border border-accent-green/40 text-accent-green hover:bg-accent-green/30'
+            : model.pricingLevel === 2
+            ? 'bg-accent-blue/20 border border-accent-blue/40 text-accent-blue hover:bg-accent-blue/30'
+            : 'bg-accent-purple/20 border border-accent-purple/40 text-accent-purple hover:bg-accent-purple/30'
+        }`}
+      >
+        🛒 前往官网购买套餐
+      </a>
     </div>
   )
 }

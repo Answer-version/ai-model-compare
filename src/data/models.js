@@ -17,6 +17,7 @@ export const models = [
     highlights: ['性价比之王', '响应速度快'],
     tags: ['通用', '低价', '快速'],
     color: 'blue',
+    purchaseUrl: 'https://platform.minimaxi.com/',
   },
   {
     id: 'minimax-m2.5',
@@ -36,6 +37,7 @@ export const models = [
     highlights: ['多模态低价', '视频理解'],
     tags: ['多模态', '低价', '视频'],
     color: 'blue',
+    purchaseUrl: 'https://platform.minimaxi.com/',
   },
   {
     id: 'doubao-seed',
@@ -55,6 +57,7 @@ export const models = [
     highlights: ['角色扮演强', '免费额度'],
     tags: ['通用', '中文', '角色扮演'],
     color: 'purple',
+    purchaseUrl: 'https://console.volcengine.com/ark/region:ark+cn-beijing/open',
   },
   {
     id: 'kimi-k2.5',
@@ -74,6 +77,7 @@ export const models = [
     highlights: ['128K上下文', '长文本王者'],
     tags: ['长文本', 'RAG', '中文'],
     color: 'yellow',
+    purchaseUrl: 'https://platform.moonshot.cn/',
   },
   {
     id: 'glm-4.7',
@@ -93,6 +97,7 @@ export const models = [
     highlights: ['国产之光', 'Function Call'],
     tags: ['通用', '中文', 'API开发'],
     color: 'green',
+    purchaseUrl: 'https://open.bigmodel.cn/',
   },
   {
     id: 'glm-5',
@@ -112,6 +117,7 @@ export const models = [
     highlights: ['多模态综合', '全面升级'],
     tags: ['多模态', '中文', '综合'],
     color: 'green',
+    purchaseUrl: 'https://open.bigmodel.cn/',
   },
   {
     id: 'qwen-3.5',
@@ -131,6 +137,7 @@ export const models = [
     highlights: ['开源免费', '代码最强'],
     tags: ['开源', '代码', '低价'],
     color: 'blue',
+    purchaseUrl: 'https://dashscope.console.aliyun.com/',
   },
   {
     id: 'deepseek-v3.2',
@@ -150,6 +157,7 @@ export const models = [
     highlights: ['推理王者', '代码数学强'],
     tags: ['推理', '代码', '数学'],
     color: 'red',
+    purchaseUrl: 'https://platform.deepseek.com/',
   },
   {
     id: 'yi-2.5',
@@ -169,6 +177,7 @@ export const models = [
     highlights: ['200K上下文', '多语言'],
     tags: ['长文本', '多语言', '开源'],
     color: 'purple',
+    purchaseUrl: 'https://platform.lingyiwanwu.com/',
   },
   {
     id: 'qwen2.5-coder',
@@ -188,6 +197,7 @@ export const models = [
     highlights: ['代码专项', '支持92种语言'],
     tags: ['代码', '开源', '低价'],
     color: 'blue',
+    purchaseUrl: 'https://dashscope.console.aliyun.com/',
   },
   {
     id: 'hy-2.0',
@@ -207,6 +217,7 @@ export const models = [
     highlights: ['企业服务', '安全合规'],
     tags: ['企业', '中文', '合规'],
     color: 'green',
+    purchaseUrl: 'https://www.baichuan-ai.com/',
   },
   {
     id: 'hy-t1',
@@ -226,6 +237,7 @@ export const models = [
     highlights: ['极速响应', '低延迟'],
     tags: ['实时对话', '低价', '快速'],
     color: 'blue',
+    purchaseUrl: 'https://www.baichuan-ai.com/',
   },
 ]
 
