@@ -337,7 +337,11 @@ export const models = [
     purchaseUrl: 'https://platform.openai.com/',
     pricingUrl: 'https://openai.com/api/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 80, hot: false },
+      { name: 'Plus', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: 1000, hot: true },
+      { name: 'Pro', firstMonth: 1440, monthly: 1440, quarterly: 4320, yearly: 17280, requestsPer5h: 10000, hot: false },
+    ],
   },
   {
     id: 'gpt-4o-mini',
@@ -361,7 +365,10 @@ export const models = [
     purchaseUrl: 'https://platform.openai.com/',
     pricingUrl: 'https://openai.com/api/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 80, hot: false },
+      { name: 'Plus', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: 1000, hot: true },
+    ],
   },
   {
     id: 'o1',
@@ -385,7 +392,9 @@ export const models = [
     purchaseUrl: 'https://platform.openai.com/',
     pricingUrl: 'https://openai.com/api/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Pro', firstMonth: 1440, monthly: 1440, quarterly: 4320, yearly: 17280, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'o3-mini',
@@ -433,7 +442,10 @@ export const models = [
     purchaseUrl: 'https://console.anthropic.com/',
     pricingUrl: 'https://console.anthropic.com/settings/plans',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 40, hot: false },
+      { name: 'Pro', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'claude-3.5-haiku',
@@ -457,7 +469,9 @@ export const models = [
     purchaseUrl: 'https://console.anthropic.com/',
     pricingUrl: 'https://console.anthropic.com/settings/plans',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 40, hot: false },
+    ],
   },
   {
     id: 'claude-3-opus',
@@ -481,7 +495,9 @@ export const models = [
     purchaseUrl: 'https://console.anthropic.com/',
     pricingUrl: 'https://console.anthropic.com/settings/plans',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Max', firstMonth: 720, monthly: 720, quarterly: 2160, yearly: 7200, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'gemini-2.0-flash',
@@ -505,7 +521,10 @@ export const models = [
     purchaseUrl: 'https://ai.google.dev/',
     pricingUrl: 'https://ai.google.dev/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 60, hot: false },
+      { name: 'Advanced', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'gemini-1.5-pro',
@@ -529,7 +548,10 @@ export const models = [
     purchaseUrl: 'https://ai.google.dev/',
     pricingUrl: 'https://ai.google.dev/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 60, hot: false },
+      { name: 'Advanced', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'gemini-1.5-flash',
@@ -553,7 +575,10 @@ export const models = [
     purchaseUrl: 'https://ai.google.dev/',
     pricingUrl: 'https://ai.google.dev/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: 60, hot: false },
+      { name: 'Advanced', firstMonth: 145, monthly: 145, quarterly: 435, yearly: 1440, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'llama-3.1-70b',
@@ -577,7 +602,9 @@ export const models = [
     purchaseUrl: 'https://ai.meta.com/',
     pricingUrl: 'https://ai.meta.com/llm-pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: '开源免费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'llama-3.1-8b',
@@ -601,7 +628,9 @@ export const models = [
     purchaseUrl: 'https://ai.meta.com/',
     pricingUrl: 'https://ai.meta.com/llm-pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: '开源免费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'mistral-large',
@@ -625,7 +654,10 @@ export const models = [
     purchaseUrl: 'https://console.mistral.ai/',
     pricingUrl: 'https://console.mistral.ai/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+      { name: 'Pro', firstMonth: 108, monthly: 108, quarterly: 324, yearly: 1296, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'mistral-small',
@@ -649,7 +681,9 @@ export const models = [
     purchaseUrl: 'https://console.mistral.ai/',
     pricingUrl: 'https://console.mistral.ai/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'command-r-plus',
@@ -673,7 +707,9 @@ export const models = [
     purchaseUrl: 'https://dashboard.cohere.com/',
     pricingUrl: 'https://dashboard.cohere.com/api-keys',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'API付费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'command-r',
@@ -697,7 +733,9 @@ export const models = [
     purchaseUrl: 'https://dashboard.cohere.com/',
     pricingUrl: 'https://dashboard.cohere.com/api-keys',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'API付费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'grok-2',
@@ -721,7 +759,10 @@ export const models = [
     purchaseUrl: 'https://console.x.ai/',
     pricingUrl: 'https://console.x.ai/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'Free', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+      { name: 'SuperGrok', firstMonth: 216, monthly: 216, quarterly: 648, yearly: 2160, requestsPer5h: null, hot: true },
+    ],
   },
   {
     id: 'grok-1',
@@ -745,7 +786,9 @@ export const models = [
     purchaseUrl: 'https://console.x.ai/',
     pricingUrl: 'https://console.x.ai/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: '开源免费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'amazon-titan',
@@ -769,7 +812,9 @@ export const models = [
     purchaseUrl: 'https://aws.amazon.com/bedrock/',
     pricingUrl: 'https://aws.amazon.com/bedrock/pricing/',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'API付费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
   {
     id: 'ai21-j2-ultra',
@@ -793,7 +838,9 @@ export const models = [
     purchaseUrl: 'https://www.ai21.com/',
     pricingUrl: 'https://www.ai21.com/pricing',
     region: 'global',
-    plans: [],
+    plans: [
+      { name: 'API付费', firstMonth: 0, monthly: 0, quarterly: 0, yearly: 0, requestsPer5h: null, hot: false },
+    ],
   },
 ]
 
