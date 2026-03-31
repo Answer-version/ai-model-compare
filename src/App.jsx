@@ -33,6 +33,11 @@ function App() {
 
   const filteredModels = useMemo(() => {
     return models.filter(model => {
+      // Only show models with subscription plans
+      if (!model.plans || model.plans.length === 0) {
+        return false
+      }
+
       if (searchQuery && !model.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
           !model.provider.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false
@@ -91,10 +96,12 @@ function App() {
   }, [filteredModels, sortBy])
 
   const stats = useMemo(() => {
+    const modelsWithPlans = models.filter(m => m.plans && m.plans.length > 0)
     const hotPlans = models.reduce((sum, m) => sum + (m.plans?.filter(p => p.hot).length || 0), 0)
+    const providersWithPlans = [...new Set(modelsWithPlans.map(m => m.providerKey))]
     return {
-      totalModels: models.length,
-      totalProviders: providers.length,
+      totalModels: modelsWithPlans.length,
+      totalProviders: providersWithPlans.length,
       filteredCount: filteredModels.length,
       hotPlans
     }
