@@ -256,10 +256,21 @@ function App() {
 
         {/* Table */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          {/* Tip Banner */}
+          <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex items-center gap-4 text-sm">
+            <span className="flex items-center gap-2 text-blue-700">
+              <span className="bg-blue-100 px-2 py-0.5 rounded text-xs font-bold">📋</span>
+              <span><strong>有套餐</strong> 标签表示该模型有订阅套餐</span>
+            </span>
+            <span className="flex items-center gap-2 text-purple-700">
+              <span className="bg-purple-100 px-2 py-0.5 rounded text-xs font-bold">👆</span>
+              <span>点击模型行可<strong>展开/收起</strong>全部套餐详情</span>
+            </span>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1400px]">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-left text-sm text-gray-600">
+                <tr className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200 text-left text-sm text-gray-600">
                   <th className="px-4 py-3 font-semibold">平台</th>
                   <th className="px-4 py-3 font-semibold">模型</th>
                   <th className="px-4 py-3 font-semibold">评分</th>
@@ -310,7 +321,8 @@ function App() {
 function ModelRow({ model, index }) {
   const colors = colorMap[model.color] || colorMap.blue
   const [expanded, setExpanded] = useState(false)
-  const hotPlan = model.plans?.find(p => p.hot)
+  // 显示第一个套餐（不是只显示热门）
+  const firstPlan = model.plans?.[0]
 
   const formatPrice = (price, prefix = '¥') => {
     if (price === null || price === undefined) return '-'
@@ -318,11 +330,13 @@ function ModelRow({ model, index }) {
     return `${prefix}${price}`
   }
 
+  const hasPlans = model.plans && model.plans.length > 0
+
   return (
     <>
       <tr 
-        className={`border-b border-gray-100 hover:bg-blue-50/30 transition-colors cursor-pointer ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-        onClick={() => model.plans?.length > 0 && setExpanded(!expanded)}
+        className={`border-b border-gray-100 hover:bg-blue-50/50 transition-colors ${hasPlans ? 'cursor-pointer' : ''} ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+        onClick={() => hasPlans && setExpanded(!expanded)}
       >
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
@@ -331,6 +345,11 @@ function ModelRow({ model, index }) {
             <span className={`text-xs px-1.5 py-0.5 rounded ${model.region === 'cn' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
               {model.region === 'cn' ? '国内' : '全球'}
             </span>
+            {hasPlans && (
+              <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded cursor-help" title="点击查看套餐详情">
+                📋 有套餐
+              </span>
+            )}
           </div>
         </td>
         <td className="px-4 py-3">
@@ -351,28 +370,28 @@ function ModelRow({ model, index }) {
           <span className="font-mono text-gray-700 text-sm">{model.contextLength}</span>
         </td>
         <td className="px-4 py-3">
-          <span className={`font-bold ${hotPlan ? 'text-orange-600' : 'text-gray-600'}`}>
-            {hotPlan ? '¥' + hotPlan.firstMonth : '-'}
+          <span className={`font-bold ${firstPlan ? 'text-orange-600' : 'text-gray-400'}`}>
+            {firstPlan ? '¥' + firstPlan.firstMonth : '-'}
           </span>
         </td>
         <td className="px-4 py-3">
-          <span className={`font-semibold ${hotPlan ? 'text-gray-900' : 'text-gray-400'}`}>
-            {hotPlan ? '¥' + hotPlan.monthly + '/月' : '-'}
-          </span>
-        </td>
-        <td className="px-4 py-3">
-          <span className="text-gray-600">
-            {hotPlan ? '¥' + hotPlan.quarterly : '-'}
+          <span className={`font-semibold ${firstPlan ? 'text-gray-900' : 'text-gray-400'}`}>
+            {firstPlan ? '¥' + firstPlan.monthly + '/月' : '-'}
           </span>
         </td>
         <td className="px-4 py-3">
           <span className="text-gray-600">
-            {hotPlan ? '¥' + hotPlan.yearly : '-'}
+            {firstPlan ? '¥' + firstPlan.quarterly : '-'}
+          </span>
+        </td>
+        <td className="px-4 py-3">
+          <span className="text-gray-600">
+            {firstPlan ? '¥' + firstPlan.yearly : '-'}
           </span>
         </td>
         <td className="px-4 py-3">
           <span className="text-gray-600 text-sm">
-            {hotPlan ? (hotPlan.requestsPer5h ? hotPlan.requestsPer5h.toLocaleString() : '未公开') : '-'}
+            {firstPlan ? (firstPlan.requestsPer5h ? firstPlan.requestsPer5h.toLocaleString() : '未公开') : '-'}
           </span>
         </td>
         <td className="px-4 py-3">
@@ -390,21 +409,19 @@ function ModelRow({ model, index }) {
           </div>
         </td>
         <td className="px-4 py-3">
-          <div className="flex gap-2">
+          <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
             <a
               href={model.pricingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
               className="px-3 py-1.5 bg-gray-100 border border-gray-200 rounded-lg text-xs text-gray-600 hover:bg-gray-200 transition-all"
             >
-              套餐详情
+              官网详情
             </a>
             <a
               href={model.purchaseUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
               className="px-3 py-1.5 bg-blue-500 rounded-lg text-xs text-white font-medium hover:bg-blue-600 transition-all shadow-sm"
             >
               购买
@@ -412,42 +429,91 @@ function ModelRow({ model, index }) {
           </div>
         </td>
       </tr>
-      {/* Expanded Plans */}
-      {model.plans && model.plans.length > 0 && expanded && (
+      {/* Expanded Plans Modal */}
+      {hasPlans && expanded && (
         <tr className="border-b border-gray-100">
-          <td colSpan={11} className="px-4 py-4 bg-gradient-to-b from-blue-50/50 to-white">
-            <div className="flex flex-wrap gap-3">
+          <td colSpan={11} className="px-4 py-6 bg-gradient-to-b from-blue-50/50 to-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{model.logo}</span>
+                <div>
+                  <div className="font-bold text-gray-900 text-lg">{model.name}</div>
+                  <div className="text-gray-500 text-sm">{model.provider} - 全部套餐</div>
+                </div>
+              </div>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setExpanded(false); }}
+                className="px-3 py-1.5 bg-gray-200 rounded-lg text-gray-500 hover:bg-gray-300 text-sm"
+              >
+                ✕ 关闭
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-4">
               {model.plans.map((plan, i) => (
-                <div key={i} className={`flex-1 min-w-[160px] max-w-[200px] p-4 rounded-xl border-2 ${plan.hot ? 'border-orange-300 bg-white shadow-md' : 'border-gray-200 bg-white'}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="font-semibold text-gray-900">{plan.name}</span>
-                    {plan.hot && <span className="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-xs font-medium">热门</span>}
+                <div key={i} className={`flex-1 min-w-[200px] max-w-[280px] p-5 rounded-2xl border-2 ${plan.hot ? 'border-orange-400 bg-white shadow-lg' : 'border-gray-200 bg-white'}`}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="font-bold text-gray-900 text-lg">{plan.name}</span>
+                    {plan.hot && <span className="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-xs font-bold">🔥 热门</span>}
                     {plan.speed && <span className="px-2 py-0.5 bg-blue-100 text-blue-600 rounded text-xs">{plan.speed}</span>}
                   </div>
-                  <div className="space-y-1.5 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">首月</span>
-                      <span className="font-bold text-orange-600">¥{plan.firstMonth}</span>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between py-1 border-b border-gray-100">
+                      <span className="text-gray-500">首月价格</span>
+                      <span className="font-bold text-orange-600 text-base">¥{plan.firstMonth}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">月价</span>
+                    <div className="flex justify-between py-1 border-b border-gray-100">
+                      <span className="text-gray-500">包月价格</span>
                       <span className="font-semibold text-gray-900">¥{plan.monthly}/月</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">季价</span>
+                    <div className="flex justify-between py-1 border-b border-gray-100">
+                      <span className="text-gray-500">包季价格</span>
                       <span className="text-gray-700">¥{plan.quarterly}/季</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">年价</span>
+                    <div className="flex justify-between py-1 border-b border-gray-100">
+                      <span className="text-gray-500">包年价格</span>
                       <span className="text-gray-700">¥{plan.yearly}/年</span>
                     </div>
-                    <div className="flex justify-between pt-1 border-t border-gray-100">
-                      <span className="text-gray-500">5h请求</span>
+                    <div className="flex justify-between py-1">
+                      <span className="text-gray-500">5小时请求数</span>
                       <span className="text-gray-700 font-medium">{plan.requestsPer5h ? plan.requestsPer5h.toLocaleString() : '未公开'}</span>
                     </div>
                   </div>
+                  <div className="mt-4 flex gap-2">
+                    <a
+                      href={model.pricingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center px-4 py-2 bg-gray-100 rounded-lg text-gray-700 text-sm hover:bg-gray-200 transition-all"
+                    >
+                      查看官网
+                    </a>
+                    <a
+                      href={model.purchaseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center px-4 py-2 bg-blue-500 rounded-lg text-white text-sm font-medium hover:bg-blue-600 transition-all"
+                    >
+                      立即购买
+                    </a>
+                  </div>
                 </div>
               ))}
+            </div>
+            {hasPlans && (
+              <div className="mt-4 text-center text-gray-400 text-sm">
+                💡 点击任意模型行可展开/收起套餐详情
+              </div>
+            )}
+          </td>
+        </tr>
+      )}
+      {/* Show tip for rows with plans */}
+      {!expanded && hasPlans && (
+        <tr className="border-b border-gray-100">
+          <td colSpan={11} className="px-4 py-1 bg-blue-50/30">
+            <div className="flex items-center gap-2 text-blue-500 text-xs">
+              <span>👆</span>
+              <span>点击上方行查看 {model.name} 的全部套餐详情</span>
             </div>
           </td>
         </tr>
