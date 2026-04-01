@@ -144,7 +144,7 @@ function App() {
               <p className="text-gray-500 text-sm mt-1">全球头部平台价格聚合 · 每日更新</p>
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-500">
-              <span>更新日期：2026-03-31</span>
+              <span>更新日期：{new Date().toLocaleDateString('zh-CN')}</span>
             </div>
           </div>
         </div>
