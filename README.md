@@ -5,9 +5,8 @@
 [![Stars](https://img.shields.io/github/stars/Answer-version/ai-model-compare?style=social)](https://github.com/Answer-version/ai-model-compare)
 [![License](https://img.shields.io/github/license/Answer-version/ai-model-compare)](https://github.com/Answer-version/ai-model-compare)
 [![Last Commit](https://img.shields.io/github/last-commit/Answer-version/ai-model-compare)](https://github.com/Answer-version/ai-model-compare)
-[![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fai-model-compare.us.ci)](https://ai-model-compare.us.ci)
 
-[🌐 在线访问](https://ai-model-compare.us.ci) | [📖 中文文档](./docs/README_zh.md)
+[📖 中文文档](./docs/README_zh.md) | [🚀 本地运行](#-快速开始)
 
 ---
 
@@ -68,10 +67,6 @@
 ---
 
 ## 🚀 快速开始
-
-### 在线访问
-
-直接访问：**https://ai-model-compare.us.ci**
 
 ### 本地开发
 

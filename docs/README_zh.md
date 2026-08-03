@@ -2,7 +2,7 @@
 
 > 专注于AI大模型订阅套餐与API价格对比的工具站
 
-**在线访问**：https://ai-model-compare.us.ci
+**本地运行**：见 [README 快速开始](../README.md#-快速开始)
 
 ---
 
